@@ -175,5 +175,32 @@ contract SubContract {
         }
         return filteredCrumbs;
     }
+
+
+    function getCrumbsByRequester() public view returns (Crumb[] memory) {
+        uint256 count = 0;
+
+        // Count crumbs for the requester
+        for (uint256 i = 0; i < crumbs.length; i++) {
+            if (crumbs[i].assignee == msg.sender) {
+                count++;
+            }
+        }
+
+        // Create an array to store the matching crumbs
+        Crumb[] memory filteredCrumbs = new Crumb[](count);
+        uint256 index = 0;
+
+        for (uint256 i = 0; i < crumbs.length; i++) {
+            if (crumbs[i].assignee == msg.sender) {
+                filteredCrumbs[index] = crumbs[i];
+                index++;
+            }
+        }
+
+        return filteredCrumbs;
+    }
+
+
 }
 

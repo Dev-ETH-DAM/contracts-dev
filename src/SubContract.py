@@ -112,3 +112,18 @@ async def get_all_crumbs(
     crumbs = await contract.functions.getAllCrumbs().call()
     print(f"All crumbs: {crumbs}")
     return crumbs
+
+async def get_crumbs_by_requester(
+    address: str,
+    network_name: Optional[str] = "sapphire-testnet"
+):
+    from src.ContractUtility import ContractUtility
+    from src.utils import get_contract
+
+    contract_utility = ContractUtility(network_name)
+    abi, _ = get_contract("SubContract")
+    contract = contract_utility.w3.eth.contract(address=address, abi=abi)
+
+    crumbs = await contract.functions.getCrumbsByRequester().call()
+    print(f"Crumbs by requester: {crumbs}")
+    return crumbs
