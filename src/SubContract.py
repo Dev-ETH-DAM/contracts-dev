@@ -1,6 +1,50 @@
-from typing import Optional
+from dataclasses import dataclass
+from datetime import datetime
+
+from enum import Enum
+from typing import Optional, Tuple
 from src.ContractUtility import ContractUtility
 from src.utils import get_contract
+
+
+class CrumbStatus(Enum):
+    NEW = 0
+    QUEUED = 1
+    CLOSED = 2
+    CLOSED_VALIDATED = 3
+
+
+@dataclass
+class Crumb:
+    id: bytes
+    alias_name: str
+    price: int
+    status: CrumbStatus
+    setup_task: str
+    setup_validation: str
+    result: str
+    assignee: str
+    last_updated: int
+    max_run: int
+
+    @classmethod
+    def from_tuple(cls, data: Tuple):
+        return cls(
+            id=data[0],
+            alias_name=data[1],
+            price=data[2],
+            status=CrumbStatus(data[3]),
+            setup_task=data[4],
+            setup_validation=data[5],
+            result=data[6],
+            assignee=data[7],
+            last_updated=data[8],
+            max_run=data[9],
+        )
+
+    def last_updated_datetime(self) -> datetime:
+        return datetime.fromtimestamp(self.last_updated)
+
 
 async def add_crumb(
     address: str,
@@ -23,6 +67,7 @@ async def add_crumb(
     tx_receipt = await contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
     print(f"addCrumb transaction: {tx_receipt.transactionHash.hex()}")
 
+
 async def update_crumb_to_queued(
     address: str,
     crumb_id: str,
@@ -35,7 +80,9 @@ async def update_crumb_to_queued(
     gas_price = await contract_utility.w3.eth.gas_price
     tx_hash = await contract.functions.updateCrumbToQueued(crumb_id).transact({"gasPrice": gas_price})
     tx_receipt = await contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
-    print(f"updateCrumbToQueued transaction: {tx_receipt.transactionHash.hex()}")
+    print(
+        f"updateCrumbToQueued transaction: {tx_receipt.transactionHash.hex()}")
+
 
 async def update_crumb_to_closed(
     address: str,
@@ -50,7 +97,9 @@ async def update_crumb_to_closed(
     gas_price = await contract_utility.w3.eth.gas_price
     tx_hash = await contract.functions.updateCrumbToClosed(crumb_id, result).transact({"gasPrice": gas_price})
     tx_receipt = await contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
-    print(f"updateCrumbToClosed transaction: {tx_receipt.transactionHash.hex()}")
+    print(
+        f"updateCrumbToClosed transaction: {tx_receipt.transactionHash.hex()}")
+
 
 async def update_crumb_to_closed_validated(
     address: str,
@@ -64,7 +113,9 @@ async def update_crumb_to_closed_validated(
     gas_price = await contract_utility.w3.eth.gas_price
     tx_hash = await contract.functions.updateCrumbToClosedValidated(crumb_id).transact({"gasPrice": gas_price})
     tx_receipt = await contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
-    print(f"updateCrumbToClosedValidated transaction: {tx_receipt.transactionHash.hex()}")
+    print(
+        f"updateCrumbToClosedValidated transaction: {tx_receipt.transactionHash.hex()}")
+
 
 async def get_crumb(
     address: str,
@@ -79,6 +130,7 @@ async def get_crumb(
     print(f"Crumb: {crumb}")
     return crumb
 
+
 async def get_crumb_count(address: str, network_name: Optional[str] = "sapphire-testnet"):
     contract_utility = ContractUtility(network_name)
     abi, _ = get_contract("SubContract")
@@ -87,6 +139,7 @@ async def get_crumb_count(address: str, network_name: Optional[str] = "sapphire-
     count = await contract.functions.getCrumbCount().call()
     print(f"Number of crumbs: {count}")
     return count
+
 
 async def get_crumbs_by_status(
     address: str,
@@ -101,6 +154,7 @@ async def get_crumbs_by_status(
     print(f"Crumbs by status {status}: {crumbs}")
     return crumbs
 
+
 async def get_all_crumbs(
     address: str,
     network_name: Optional[str] = "sapphire-testnet"
@@ -112,6 +166,7 @@ async def get_all_crumbs(
     crumbs = await contract.functions.getAllCrumbs().call()
     print(f"All crumbs: {crumbs}")
     return crumbs
+
 
 async def get_crumbs_by_requester(
     address: str,
