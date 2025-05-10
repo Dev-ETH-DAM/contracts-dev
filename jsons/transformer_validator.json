@@ -1,0 +1,7 @@
+{
+    "task_type": "sentiment-analysis",
+    "model_name": "",
+    "ds_text_column": "text",
+    "ds_id_column": "id",
+    "predict_ds_url": "https://raw.githubusercontent.com/AskingAlexander/Datasets/refs/heads/master/sample.csv"
+}
