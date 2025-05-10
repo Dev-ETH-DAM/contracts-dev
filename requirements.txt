@@ -1,0 +1,6 @@
+flake8
+py-solc-x
+pytest
+pytest-asyncio
+oasis-sapphire-py==0.4.*
+web3==7.*
