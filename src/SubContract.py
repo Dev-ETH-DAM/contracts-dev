@@ -127,3 +127,21 @@ async def get_crumbs_by_requester(
     crumbs = await contract.functions.getCrumbsByRequester().call()
     print(f"Crumbs by requester: {crumbs}")
     return crumbs
+
+
+async def update_results(
+    address: str,
+    results: str,
+    network_name: Optional[str] = "sapphire-testnet"
+):
+    from src.ContractUtility import ContractUtility
+    from src.utils import get_contract
+
+    contract_utility = ContractUtility(network_name)
+    abi, _ = get_contract("SubContract")
+    contract = contract_utility.w3.eth.contract(address=address, abi=abi)
+
+    gas_price = await contract_utility.w3.eth.gas_price
+    tx_hash = await contract.functions.updateResults(results).transact({"gasPrice": gas_price})
+    tx_receipt = await contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
+    print(f"updateResults transaction: {tx_receipt.transactionHash.hex()}")

@@ -27,6 +27,7 @@ contract SubContract {
     string public requestName;
     Crumb[] public crumbs;
     bytes21 public roflAppID;
+    string public results;
 
     // Events
     event CrumbAdded(bytes16 indexed id, string aliasName);
@@ -113,7 +114,13 @@ contract SubContract {
         }
         revert("Crumb not found");
     }
-    
+
+    function updateResults(
+        string memory _results
+    ) public {
+        results = _results;
+    }
+
     // Function to update a crumb's status to ClosedValidated
     // TODO - only ROFL/TEE
     function updateCrumbToClosedValidated(
