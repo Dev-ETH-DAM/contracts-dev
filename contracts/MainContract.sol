@@ -77,5 +77,16 @@ contract MainContract {
         revert("Task with the given ID not found in InProgressQueue");
     }
 
+    function getRequestQueue() public view returns (ComputeTask[] memory) {
+        return RequestQueue;
+    }
+
+    function getInProgressQueue() public view returns (ComputeTask[] memory) {
+        return InProgressQueue;
+    }
+
+    function getCompletedQueue() public view returns (ComputeTask[] memory) {
+        return CompletedQueue;
+    }
 
 }

@@ -63,7 +63,7 @@ async def get_request_queue(
     abi, _ = get_contract("MainContract")
     contract = contract_utility.w3.eth.contract(address=address, abi=abi)
 
-    queue = await contract.functions.RequestQueue().call()
+    queue = await contract.functions.getRequestQueue().call()
     print(f"RequestQueue: {queue}")
     return queue
 
@@ -75,7 +75,7 @@ async def get_in_progress_queue(
     abi, _ = get_contract("MainContract")
     contract = contract_utility.w3.eth.contract(address=address, abi=abi)
 
-    queue = await contract.functions.InProgressQueue().call()
+    queue = await contract.functions.getInProgressQueue().call()
     print(f"InProgressQueue: {queue}")
     return queue
 
@@ -87,6 +87,6 @@ async def get_completed_queue(
     abi, _ = get_contract("MainContract")
     contract = contract_utility.w3.eth.contract(address=address, abi=abi)
 
-    queue = await contract.functions.CompletedQueue().call()
+    queue = await contract.functions.getCompletedQueue().call()
     print(f"CompletedQueue: {queue}")
     return queue
