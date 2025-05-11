@@ -10,6 +10,7 @@ from src.SubContract import *
 from src.MessageBox import set_message, get_message
 import argparse
 
+from src.eval_tee import eval_done_crumbs
 from tee.mover import process_request_queue
 
 
@@ -53,7 +54,9 @@ async def aggregate_task():
 
 
 async def validate_crumb_results():
-    pass
+    while True:
+        await eval_done_crumbs()
+        await sleep(30)
 
 
 async def async_main():
@@ -62,7 +65,8 @@ async def async_main():
 
     :return: None
     """
-
+    await eval_done_crumbs()
+    return
     parser = argparse.ArgumentParser(
         description="""A Python CLI tool for compiling,
                     deploying, and interacting with smart contracts."""
