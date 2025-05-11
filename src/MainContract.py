@@ -95,6 +95,10 @@ async def get_request_queue(
     return queue
 
 
+async def get_in_progress_queue_t(address: str, network_name: Optional[str] = "sapphire-testnet") -> list[ComputeTask]:
+    return [ComputeTask.from_tuple(task) for task in await get_in_progress_queue(address, network_name)]
+
+
 async def get_in_progress_queue(
     address: str,
     network_name: Optional[str] = "sapphire-testnet"
