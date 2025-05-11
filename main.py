@@ -59,6 +59,10 @@ async def validate_crumb_results():
         await sleep(30)
 
 
+async def mover():
+    while True:
+        await process_request_queue()
+        await sleep(30)
 async def async_main():
     """
     Main method for the Python CLI tool.
@@ -108,6 +112,8 @@ async def async_main():
     # and validate_crumb_results in the background every 30 seconds
     # using asyncio.create_task
     task = asyncio.create_task(aggregate_contract_results())
+    task2 = asyncio.create_task(validate_crumb_results())
+    task3 = asyncio.create_task(mover())
 
     match arguments.command:
         case "compile":
@@ -122,6 +128,8 @@ async def async_main():
         case _:
             parser.print_help()
     await task
+    await task2
+    await task3
 
 
 def main():
