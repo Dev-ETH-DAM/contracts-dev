@@ -55,7 +55,7 @@ async def process_request_queue(contract_address= '0x123f578600F8B64B235ba9D627F
     for item in queue_list:
         sub_contract_address = await contract_utility.deploy_contract('SubContract')
 
-        data = json.loads(dummuJson)
+        data = json.loads(item['content'])
 
         for obj in data:
 
