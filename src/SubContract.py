@@ -121,14 +121,15 @@ async def get_crumb(
     address: str,
     crumb_id: str,
     network_name: Optional[str] = "sapphire-testnet"
-):
+) -> Crumb:
     contract_utility = ContractUtility(network_name)
     abi, _ = get_contract("SubContract")
     contract = contract_utility.w3.eth.contract(address=address, abi=abi)
 
     crumb = await contract.functions.getCrumb(crumb_id).call()
     print(f"Crumb: {crumb}")
-    return crumb
+
+    return Crumb.from_tuple(crumb)
 
 
 async def get_crumb_count(address: str, network_name: Optional[str] = "sapphire-testnet"):
@@ -145,14 +146,19 @@ async def get_crumbs_by_status(
     address: str,
     status: int,
     network_name: Optional[str] = "sapphire-testnet"
-):
+) -> list[Crumb]:
     contract_utility = ContractUtility(network_name)
     abi, _ = get_contract("SubContract")
     contract = contract_utility.w3.eth.contract(address=address, abi=abi)
 
     crumbs = await contract.functions.getCrumbsByStatus(status).call()
     print(f"Crumbs by status {status}: {crumbs}")
-    return crumbs
+
+    return [Crumb.from_tuple(crumb) for crumb in crumbs]
+
+
+async def get_all_crumbs_t(address: str, network_name: Optional[str] = "sapphire-testnet") -> list[Crumb]:
+    return [Crumb.from_tuple(crumb) for crumb in await get_all_crumbs(address, network_name)]
 
 
 async def get_all_crumbs(

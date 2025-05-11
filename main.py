@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
 import asyncio
+from asyncio import sleep
+import asyncio.tasks
+import os
 from src.ContractUtility import ContractUtility
-from src.MainContract import add_to_request_queue, get_request_queue, get_in_progress_queue, get_completed_queue
+from src.MainContract import ComputeTask, move_to_completed_queue, add_to_request_queue, get_request_queue, get_in_progress_queue, get_completed_queue, get_in_progress_queue_t
 from src.SubContract import *
 from src.MessageBox import set_message, get_message
 import argparse
@@ -11,7 +14,42 @@ from tee.mover import process_request_queue
 
 
 async def aggregate_contract_results():
-    pass
+    MAIN_CONTRACT_ADDRESS = "0x123f578600F8B64B235ba9D627F121c619731275"
+    # Get all contracts from in progress queue
+    print("Getting in progress queue...")
+    in_progress_queue: list[ComputeTask] = await get_in_progress_queue_t(
+        MAIN_CONTRACT_ADDRESS
+    )
+    for task in in_progress_queue:
+        # Get the contract address
+        contract_address: str = task.subContractAddress
+
+        # Get the crumbs from the contract
+        crumbs: list[Crumb] = await get_all_crumbs_t(contract_address)
+
+        # Get the results from the crumbs
+        is_complete = True
+        for crumb in crumbs:
+            if crumb.status != CrumbStatus.CLOSED_VALIDATED.value:
+                is_complete = False
+                break
+
+        print(f'Is complete: {is_complete}')
+        if is_complete:
+            await move_to_completed_queue(MAIN_CONTRACT_ADDRESS, task.id)
+
+        await sleep(30)
+
+
+async def aggregate_task():
+    """
+    Aggregate the task from the request queue and move it to the in progress queue.
+    """
+
+    while True:
+        await aggregate_contract_results()
+
+        await sleep(30)
 
 
 async def validate_crumb_results():
@@ -62,6 +100,11 @@ async def async_main():
 
     arguments = parser.parse_args()
 
+    # Run aggregate_contract_results in the background every 30 seconds
+    # and validate_crumb_results in the background every 30 seconds
+    # using asyncio.create_task
+    task = asyncio.create_task(aggregate_contract_results())
+
     match arguments.command:
         case "compile":
             # Use class method which does not
@@ -74,6 +117,7 @@ async def async_main():
             await contract_utility.deploy_contract(arguments.contract)
         case _:
             parser.print_help()
+    await task
 
 
 def main():
