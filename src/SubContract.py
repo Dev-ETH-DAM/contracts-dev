@@ -145,26 +145,23 @@ def create_subcontract(requester = "0xF4906b5F6D8D6f0f0512187C826729f027ADcb4B",
     return output['deployedTo']
 
 
-async def add_crumb_TEE(
+async def exec_function_general(
     address: str,
-    crumb_id: str,
-    alias_name: str,
-    price: int,
-    setup_task: str,
-    setup_validation: str,
-    max_run: int,
+    args: list,
     network_name: Optional[str] = "sapphire-testnet",
-    rofl_socket_path: str = "/run/rofl-appd.sock"
+    rofl_socket_path: str = "/run/rofl-appd.sock",
+    contract_name: str = "SubContract",
+    method_name: str = "addCrumb",
 ):
     # Prepare the contract call data
     # Assume get_contract and ContractUtility usage remains the same for ABI encoding
     contract_utility = ContractUtility(network_name)
-    abi, _ = get_contract("SubContract")
+    abi, _ = get_contract(contract_name)
     contract = contract_utility.w3.eth.contract(address=address, abi=abi)
     # Build the encoded data payload for addCrumb
     data_hex = contract.encode_abi(
-        "addCrumb",
-        args=[crumb_id, alias_name, price, setup_task, setup_validation, max_run]
+        method_name,
+        args=args
     )
 
     # Estimate gas limit if desired
@@ -188,6 +185,7 @@ async def add_crumb_TEE(
     }
 
     print(json.dumps(tx_payload))
+
     # Send the transaction via the UNIX socket endpoint
     # Use aiohttp with UnixConnector
     connector = aiohttp.UnixConnector(path=rofl_socket_path)
@@ -203,3 +201,4 @@ async def add_crumb_TEE(
     tx_hash = result.get("tx_hash") or result.get("hash")
     print(f"Submitted addCrumb tx, hash: {tx_hash}")
     return tx_hash
+    

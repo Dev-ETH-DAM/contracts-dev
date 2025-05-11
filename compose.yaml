@@ -1,6 +1,6 @@
 services:
   app:
-    image: "docker.io/ionelpatrascu/test:latest@sha256:a6d4f78029fbd41c89b4b461f796752493761f3a6041dc69360dea139eae952e"
+    image: "docker.io/ionelpatrascu/test:latest@sha256:3f2d32027f255e79b6c1d4634dc523fa92b3bf0f968db26fe90f290416516d04"
     environment:
       - PRIVATE_KEY=951ce0377a4cec5d2312b45396784ca75227098d414f704b25b601a33af96e27
     volumes:
