@@ -48,16 +48,12 @@ def process_json_file(filepath, mode="r", data=None):
 def get_contract(contract_name: str):
     output_path = (
         Path(__file__).parent.parent
-        / "compiled_contracts"
-        / f"{contract_name}_compiled.json"
+        / "contracts" / "out" / f"{contract_name}.sol"
+        / f"{contract_name}.json"
     ).resolve()
-    compiled_contract = process_json_file(output_path)
-    
-    contract_data = compiled_contract["contracts"][f"{contract_name}.sol"][
-        contract_name
-    ]
+    contract_data = process_json_file(output_path)
     abi, bytecode = (
         contract_data["abi"],
-        contract_data["evm"]["bytecode"]["object"]
+        contract_data["bytecode"]["object"]
         )
     return abi, bytecode

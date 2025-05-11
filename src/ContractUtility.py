@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from solcx import compile_standard, install_solc
-
+from datetime import datetime
 from src.utils import (
     setup_web3_middleware,
     get_contract,
@@ -28,7 +28,7 @@ class ContractUtility:
     ) -> str:
         # This remains synchronous as compilation doesn't need to be async.
         install_solc(SOLIDITY_VERSION)
-        contract_dir = (Path(__file__).parent.parent / "contracts").resolve()
+        contract_dir = (Path(__file__).parent.parent / "contracts" / "src").resolve()
         contract_dir.mkdir(parents=True, exist_ok=True)
         contract_path = contract_dir / f"{contract_name}.sol"
         with open(contract_path, "r") as file:
@@ -49,6 +49,7 @@ class ContractUtility:
                 },
             },
             solc_version=SOLIDITY_VERSION,
+            base_path=contract_dir,
         )
         output_path = (
             Path(__file__).parent.parent
@@ -61,13 +62,16 @@ class ContractUtility:
         return compiled_sol
 
     async def deploy_contract(self, contract_name: str):
+        rofl = os.environ.get("ROFL")
+        if not rofl:
+            raise ValueError("ROFL environment variable not set.")
         abi, bytecode = get_contract(contract_name)
         contract = self.w3.eth.contract(abi=abi, bytecode=bytecode)
         gas_price = await self.w3.eth.gas_price
         tx_hash = await contract.constructor(
-            "SampleRequestName1",
+            f"SampleRequestName_{str(datetime.now())}",
             "0xF4906b5F6D8D6f0f0512187C826729f027ADcb4B",
-            "0x11223344556677889900AABBCCDDEEFF0011223344",
+            "rofl1qr4vz8dueugvdzlrtt0jln676z07et88nsunmr5p",
         ).transact({
             "gasPrice": gas_price
             })
