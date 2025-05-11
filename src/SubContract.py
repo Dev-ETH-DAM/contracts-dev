@@ -66,7 +66,7 @@ async def add_crumb(
     ).transact({"gasPrice": gas_price})
     tx_receipt = await contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
     print(f"addCrumb transaction: {tx_receipt.transactionHash.hex()}")
-
+    print(f"Transaction Receipt: {tx_receipt}")
 
 async def update_crumb_to_queued(
     address: str,
@@ -103,7 +103,7 @@ async def update_crumb_to_closed(
 
 async def update_crumb_to_closed_validated(
     address: str,
-    crumb_id: str,
+    crumb_id: bytes,
     network_name: Optional[str] = "sapphire-testnet"
 ):
     contract_utility = ContractUtility(network_name)

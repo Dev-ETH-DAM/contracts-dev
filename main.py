@@ -15,7 +15,7 @@ from tee.mover import process_request_queue
 
 
 async def aggregate_contract_results():
-    MAIN_CONTRACT_ADDRESS = "0x123f578600F8B64B235ba9D627F121c619731275"
+    MAIN_CONTRACT_ADDRESS = "0x885cA90bD752A682dD1883614edA0C0557c973a6"
     # Get all contracts from in progress queue
     print("Getting in progress queue...")
     in_progress_queue: list[ComputeTask] = await get_in_progress_queue_t(
@@ -31,7 +31,7 @@ async def aggregate_contract_results():
         # Get the results from the crumbs
         is_complete = True
         for crumb in crumbs:
-            if crumb.status != CrumbStatus.CLOSED_VALIDATED.value:
+            if crumb.status.value != CrumbStatus.CLOSED_VALIDATED.value:
                 is_complete = False
                 break
 
@@ -69,8 +69,9 @@ async def async_main():
 
     :return: None
     """
-    await eval_done_crumbs()
-    return
+
+
+
     parser = argparse.ArgumentParser(
         description="""A Python CLI tool for compiling,
                     deploying, and interacting with smart contracts."""

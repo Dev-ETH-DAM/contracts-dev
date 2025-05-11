@@ -7,7 +7,7 @@ from src.MainContract import get_request_queue, move_to_in_progress_queue, get_i
 from src.SubContract import add_crumb
 
 
-async def process_request_queue(contract_address= '0x123f578600F8B64B235ba9D627F121c619731275'):
+async def process_request_queue(contract_address= '0x885cA90bD752A682dD1883614edA0C0557c973a6'):
     request_items = await get_request_queue(contract_address)
 
     queue_list = []
@@ -26,34 +26,12 @@ async def process_request_queue(contract_address= '0x123f578600F8B64B235ba9D627F
 
     contract_utility = ContractUtility('sapphire-testnet')
 
-    dummuJson = '''
-    [
-      {
-        "alias_name": "Service A",
-        "price": 10,
-        "setup_task": {"command": "npm install", "timeout": 60},
-        "setup_validation": {"script": "./validate_version.sh", "expected_output": "v1.2.3"},
-        "max_run": 100
-      },
-      {
-        "alias_name": "Service B",
-        "price": 25,
-        "setup_task": {"command": "sudo apt update && sudo apt install -y nginx", "timeout": 120},
-        "setup_validation": {"url": "http://localhost", "status_code": 200},
-        "max_run": 50
-      },
-      {
-        "alias_name": "Service C",
-        "price": 5,
-        "setup_task": {"command": "python manage.py migrate", "timeout": 90},
-        "setup_validation": {"query": "SELECT COUNT(*) FROM users", "min_rows": 1},
-        "max_run": 200
-      }
-    ]
-    '''
 
     for item in queue_list:
         sub_contract_address = await contract_utility.deploy_contract('SubContract')
+
+
+        print(item['content'])
 
         data = json.loads(item['content'])
 

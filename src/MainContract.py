@@ -60,6 +60,7 @@ async def move_to_in_progress_queue(
         task_id, sub_contract_address
     ).transact({"gasPrice": gas_price})
     tx_receipt = await contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
+    print(f"Transaction Receipt: {tx_receipt}")
     print(
         f"moveToInProgressQueue transaction: {tx_receipt.transactionHash.hex()}")
 
@@ -78,6 +79,7 @@ async def move_to_completed_queue(
         task_id
     ).transact({"gasPrice": gas_price})
     tx_receipt = await contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
+    print(f"Transaction Receipt: {tx_receipt}")
     print(
         f"moveToCompletedQueue transaction: {tx_receipt.transactionHash.hex()}")
 

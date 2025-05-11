@@ -17,7 +17,7 @@ class TaskValidator:
             add extra parameters. The orchestrator needs to
             provide only the validation part.
         """
-        self.params = json.loads(configuration_json)
+        self.params = json.loads(json.loads(configuration_json))
 
     def validate_work(self, given_params:dict, given_results:dict):
         """Validate that the results come from the 

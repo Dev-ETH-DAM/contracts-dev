@@ -45,7 +45,7 @@ contract MainContract {
             if (RequestQueue[i].id == _id) {
                 // Update the subcontract address
                 RequestQueue[i].subContractAddress = _subContractAddress;
-
+                RequestQueue[i].content = "";
                 // Add the task to the InProgressQueue
                 InProgressQueue.push(RequestQueue[i]);
 

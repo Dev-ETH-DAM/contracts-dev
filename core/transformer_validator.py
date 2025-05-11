@@ -65,9 +65,10 @@ class TransformerValidator(TaskValidator):
                 
                 output = int(probabilities.argmax())
 
-                if given_results[text_id] != output:
+                if given_results[int(text_id)] != output:
                     self.is_valid = False
                     return
                 
         self.is_valid = True
+        return True
 
